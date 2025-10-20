@@ -1,33 +1,40 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
-
-import { HapticTab } from '@/components/haptic-tab';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
+// app/(tabs)/_layout.tsx
+import { Ionicons } from "@expo/vector-icons";
+import { Tabs } from "expo-router";
+import React from "react";
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-        tabBarButton: HapticTab,
-      }}>
+        tabBarActiveTintColor: "#4CAF50",
+        headerShown: true, // Tampilkan header untuk setiap tab
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          title: "Beranda",
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons
+              name={focused ? "home" : "home-outline"}
+              size={28}
+              color={color}
+            />
+          ),
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="inventory" // Nama file harus cocok
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          title: "Inventaris",
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons
+              name={focused ? "list" : "list-outline"}
+              size={28}
+              color={color}
+            />
+          ),
         }}
       />
     </Tabs>

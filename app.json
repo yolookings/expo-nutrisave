@@ -26,6 +26,7 @@
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
+      "expo-notifications",
       "expo-router",
       [
         "expo-splash-screen",
@@ -44,6 +45,13 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "64c67e66-5a31-4612-8adb-cfbf7ebe827f"
+      }
+    },
+    "owner": "athalla"
   }
 }

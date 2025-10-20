@@ -1,4 +1,3 @@
-// app/camera.tsx
 import { CameraView, useCameraPermissions } from "expo-camera";
 import { useRouter } from "expo-router";
 import React, { useRef, useState } from "react";
@@ -19,17 +18,20 @@ const CameraScreen = () => {
   const router = useRouter();
 
   if (!permission) {
-    return <View />;
+    return <View />; // Tampilan kosong selagi menunggu status izin
   }
 
   if (!permission.granted) {
     return (
-      <View style={styles.container}>
+      <View style={styles.permissionContainer}>
         <Text style={styles.message}>
-          We need your permission to show the camera
+          Kami butuh izin Anda untuk menggunakan kamera.
         </Text>
-        <TouchableOpacity style={styles.button} onPress={requestPermission}>
-          <Text style={styles.buttonText}>Grant permission</Text>
+        <TouchableOpacity
+          style={styles.permissionButton}
+          onPress={requestPermission}
+        >
+          <Text style={styles.permissionButtonText}>Berikan Izin</Text>
         </TouchableOpacity>
       </View>
     );
@@ -39,23 +41,36 @@ const CameraScreen = () => {
     if (cameraRef.current) {
       setIsProcessing(true);
       try {
-        const photo = await cameraRef.current.takePictureAsync();
-        console.log("Foto diambil:", photo.uri);
+        // Ambil gambar dengan kualitas 70% untuk mengurangi ukuran file
+        const photo = await cameraRef.current.takePictureAsync({
+          quality: 0.7,
+        });
+        if (!photo?.uri) {
+          throw new Error("Gagal mengambil gambar.");
+        }
 
         const result = await api.uploadFoodImage(photo.uri);
 
         if (result.success) {
+          // REKOMENDASI: Gunakan library toast/snackbar untuk UX yang lebih baik
+          // daripada Alert. Contoh: react-native-toast-message
           Alert.alert(
             "Berhasil!",
-            `Makanan teridentifikasi sebagai: ${result.label}`,
-            [{ text: "OK", onPress: () => router.back() }] // router.back() untuk kembali
+            `Makanan teridentifikasi sebagai: ${result.label}.\nItem telah ditambahkan ke inventaris.`,
+            [{ text: "OK", onPress: () => router.back() }]
           );
         } else {
-          Alert.alert("Gagal", "Tidak dapat mengidentifikasi makanan.");
+          Alert.alert(
+            "Gagal",
+            result.message || "Tidak dapat mengidentifikasi makanan. Coba lagi."
+          );
         }
-      } catch (error) {
-        console.error(error);
-        Alert.alert("Error", "Terjadi kesalahan saat mengambil foto.");
+      } catch (error: any) {
+        console.error("Error in takePicture:", error);
+        Alert.alert(
+          "Error",
+          error.message || "Terjadi kesalahan saat memproses gambar."
+        );
       } finally {
         setIsProcessing(false);
       }
@@ -64,7 +79,7 @@ const CameraScreen = () => {
 
   return (
     <View style={styles.container}>
-      <CameraView style={styles.camera} ref={cameraRef}>
+      <CameraView style={styles.camera} ref={cameraRef} facing="back">
         {isProcessing && (
           <View style={styles.loadingOverlay}>
             <ActivityIndicator size="large" color="#fff" />
@@ -73,10 +88,13 @@ const CameraScreen = () => {
         )}
         <View style={styles.buttonContainer}>
           <TouchableOpacity
-            style={styles.captureButton}
+            style={[
+              styles.captureButton,
+              isProcessing && styles.captureButtonDisabled,
+            ]}
             onPress={takePicture}
             disabled={isProcessing}
-          ></TouchableOpacity>
+          />
         </View>
       </CameraView>
     </View>
@@ -84,42 +102,49 @@ const CameraScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1 },
-  message: { textAlign: "center", paddingBottom: 10 },
+  container: { flex: 1, backgroundColor: "black" },
+  permissionContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
+  },
+  message: { textAlign: "center", fontSize: 16, marginBottom: 20 },
+  permissionButton: {
+    backgroundColor: "#4CAF50",
+    paddingVertical: 12,
+    paddingHorizontal: 30,
+    borderRadius: 8,
+  },
+  permissionButtonText: { color: "white", fontSize: 16 },
   camera: { flex: 1 },
   buttonContainer: {
-    flex: 1,
-    backgroundColor: "transparent",
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "flex-end",
-    marginBottom: 40,
-  },
-  button: {
-    flex: 1,
-    alignSelf: "flex-end",
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
     alignItems: "center",
+    paddingBottom: 50,
   },
   captureButton: {
     width: 70,
     height: 70,
     borderRadius: 35,
-    backgroundColor: "#fff",
+    backgroundColor: "white",
     borderWidth: 5,
-    borderColor: "#4CAF50",
+    borderColor: "gray",
   },
-  buttonText: { fontSize: 18, color: "white" },
+  captureButtonDisabled: {
+    backgroundColor: "#9E9E9E",
+    borderColor: "#616161",
+  },
   loadingOverlay: {
-    position: "absolute",
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0,
-    backgroundColor: "rgba(0,0,0,0.7)",
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0,0,0,0.6)",
     justifyContent: "center",
     alignItems: "center",
   },
-  loadingText: { color: "#fff", marginTop: 10, fontSize: 16 },
+  loadingText: { color: "white", marginTop: 10, fontSize: 16 },
 });
 
 export default CameraScreen;

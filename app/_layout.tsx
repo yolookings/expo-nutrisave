@@ -1,39 +1,34 @@
-import { Ionicons } from "@expo/vector-icons";
-import { Tabs } from "expo-router";
+// app/_layout.tsx
+import { usePushNotifications } from "@/hooks/usePushNotifications";
+import { Stack } from "expo-router";
+import React from "react";
 
-export default function TabLayout() {
+/**
+ * Ini adalah Root Layout. Kita hanya perlu memanggil hook notifikasi di sini
+ * untuk menginisialisasi semuanya. Semua logika kompleks sudah ada di dalam hook.
+ */
+export default function RootLayout() {
+  // Memanggil hook akan menginisialisasi semua logika notifikasi di latar belakang.
+  usePushNotifications();
+
   return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: "#4CAF50",
-      }}
-    >
-      <Tabs.Screen
-        name="index"
+    <Stack>
+      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen
+        name="camera"
         options={{
-          title: "Beranda",
-          tabBarIcon: ({ color, focused }) => (
-            <Ionicons
-              name={focused ? "home" : "home-outline"}
-              size={28}
-              color={color}
-            />
-          ),
+          presentation: "modal",
+          title: "Tambah Makanan",
+          headerShown: false,
         }}
       />
-      <Tabs.Screen
-        name="inventory" // Ganti dari "explore" menjadi "inventory"
+      <Stack.Screen
+        name="modal"
         options={{
-          title: "Inventaris", // Ganti judul
-          tabBarIcon: ({ color, focused }) => (
-            <Ionicons
-              name={focused ? "list" : "list-outline"}
-              size={28}
-              color={color}
-            /> // Ganti ikon
-          ),
+          presentation: "modal",
+          title: "Modal",
         }}
       />
-    </Tabs>
+    </Stack>
   );
 }
