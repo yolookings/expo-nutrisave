@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "471793191058",
+    "project_id": "pemmob-33686",
+    "storage_bucket": "pemmob-33686.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:471793191058:android:3a28af587d04977cb7be4b",
+        "android_client_info": {
+          "package_name": "com.athalla.nutrisave"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBVAjPXKF5sbkX6qYxBnrAfb6QnHoLPuAU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:471793191058:android:395c406945d4df1eb7be4b",
+        "android_client_info": {
+          "package_name": "com.athalla.pemmob"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBVAjPXKF5sbkX6qYxBnrAfb6QnHoLPuAU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
